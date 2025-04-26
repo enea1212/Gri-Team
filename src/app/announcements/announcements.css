@@ -1,0 +1,75 @@
+.loading-spinner {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.announcement-container {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  transition: transform 0.2s ease;
+}
+
+.announcement-container:hover {
+  transform: translateY(-5px);
+}
+
+.announcement-photo {
+  width: 200px;
+  height: 200px;
+  background-color: #f0f0f0; /* Placeholder*/
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  margin-right: 20px;
+}
+
+.announcement-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.announcement-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.announcement-desc {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.announcement-location {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+
+.book-button {
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  width: fit-content;
+  transition: background-color 0.3s ease;
+}
+
+.book-button:hover {
+  background-color: #005bb5;
+}

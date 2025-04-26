@@ -1,0 +1,50 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: #000000;
+    box-shadow: 0px 10px 5px rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .navbar-left {
+    flex: 1;
+  }
+  
+  .navbar-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+  }
+  
+  .navbar-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .navbar-title {
+    color: #ffffff;
+    font-family: "Haettenschweiler", Impact, sans-serif;
+    font-size: 3rem;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+  
+  .navbar-link {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1.3rem;
+    transition: all 0.4s;
+  }
+
+  .navbar-link:hover {
+    color: #ffa358;
+    transform: scale(1.5);
+  }
+  
