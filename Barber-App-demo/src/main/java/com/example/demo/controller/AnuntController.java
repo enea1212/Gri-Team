@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Anunt;
+import com.example.demo.dto.AnuntDTO;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AnuntService;
@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -42,14 +43,7 @@ public class AnuntController {
             User user = userRepository.findByUsername(authentication.getName())
                     .orElseThrow(() -> new UsernameNotFoundException("Utilizatorul nu a fost găsit"));
 
-            Anunt anunt = new Anunt();
-            anunt.setTitlu(titlu.trim());
-            anunt.setDescriere(descriere.trim());
-            anunt.setPret(pret);
-            anunt.setLocatie(locatie.trim());
-            anunt.setUser(user);
-
-            Anunt createdAnunt = anuntService.createAnunt(anunt, poza);
+            AnuntDTO createdAnunt = anuntService.createAnunt(titlu, descriere, pret, locatie, poza, user);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdAnunt);
 
         } catch (UsernameNotFoundException e) {
@@ -80,5 +74,14 @@ public class AnuntController {
             return ResponseEntity.internalServerError()
                     .body("Eroare la ștergerea anunțului: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/public")
+    public ResponseEntity<List<AnuntDTO>> getAllAnunturiExceptMine(Authentication authentication) {
+        User currentUser = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<AnuntDTO> anunturi = anuntService.getAllAnunturiExceptCurrentUser(currentUser.getId());
+        return ResponseEntity.ok(anunturi);
     }
 }
