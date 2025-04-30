@@ -39,20 +39,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestHeader("Authorization") String token) {
-        String user;
-        String pass;
-
-        token = token.split(" ")[1];
-        String decodedToken = new String(Base64.getDecoder().decode(token));
-
-        String[] decodedTokenSplit = decodedToken.split(":");
-        user = decodedTokenSplit[0];
-        pass = decodedTokenSplit[1];
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            String JWTToken = authService.login(user, pass);
+            // În acest caz, loginRequest conține username și password din body
+            String JWTToken = authService.login(loginRequest.getUsername(), loginRequest.getPassword());
             return ResponseEntity.status(HttpStatus.OK).body(new AuthResponse(JWTToken));
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
