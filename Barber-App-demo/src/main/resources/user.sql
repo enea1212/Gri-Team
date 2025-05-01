@@ -5,6 +5,10 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL
     );
 
+ALTER TABLE users
+    ADD COLUMN enabled BOOLEAN DEFAULT FALSE,
+ADD COLUMN verification_token VARCHAR(255);
+
 CREATE TABLE IF NOT EXISTS anunturi (
                           id SERIAL PRIMARY KEY,
                           titlu VARCHAR(255) NOT NULL,

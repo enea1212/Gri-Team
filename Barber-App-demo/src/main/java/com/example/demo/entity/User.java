@@ -17,6 +17,29 @@ public class User {
 
     private String password;
 
+    @Column(name = "enabled")
+    private boolean enabled = false;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+
     // Getters and setters
     public Long getId() {
         return id;

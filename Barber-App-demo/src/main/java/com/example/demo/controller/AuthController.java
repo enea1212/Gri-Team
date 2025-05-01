@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Base64;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -21,6 +22,9 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
@@ -47,6 +51,20 @@ public class AuthController {
         } catch (RuntimeException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<String> verifyEmail(@RequestParam("token") String token) {
+        Optional<User> userOpt = userRepository.findByVerificationToken(token);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setEnabled(true);
+            user.setVerificationToken(null); // Anulează tokenul după verificare
+            userRepository.save(user);
+            return ResponseEntity.ok("Contul a fost activat cu succes!");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token invalid.");
         }
     }
 }
