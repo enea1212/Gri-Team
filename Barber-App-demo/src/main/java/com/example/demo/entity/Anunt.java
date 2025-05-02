@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "anunturi")
 @Data
@@ -41,4 +44,7 @@ public class Anunt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "anunt", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnuntDisponibilitate> disponibilitati = new ArrayList<>();
 }
