@@ -22,4 +22,5 @@ public interface AnuntDisponibilitateRepository extends JpaRepository<AnuntDispo
     @Modifying
     @Query("DELETE FROM AnuntDisponibilitate ad WHERE ad.anunt.id = :anuntId")
     void deleteByAnuntId(@Param("anuntId") Long anuntId);
+    List<AnuntDisponibilitate> findAllByReservedById(Long userId);
 }

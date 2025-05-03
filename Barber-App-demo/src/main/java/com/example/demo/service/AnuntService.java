@@ -37,6 +37,7 @@ public class AnuntService {
             throw new IllegalStateException("Limită 1 anunț/utilizator");
         }
 
+
         Anunt anunt = new Anunt();
         anunt.setTitlu(titlu.trim());
         anunt.setDescriere(descriere.trim());
@@ -95,22 +96,24 @@ public class AnuntService {
 
     @Transactional
     public ResponseEntity<String> setProgramare(Long anuntId, Long userId, LocalTime interval) {
-        // Verifică dacă userul are deja o rezervare
+        // Verificare existență anunț (repetat pentru siguranță)
+        Anunt anunt = anuntRepository.findById(anuntId)
+                .orElseThrow(() -> new IllegalArgumentException("Anunț inexistent"));
+
+        // Verificare dacă userul încearcă să-și rezerve propriul anunț (repetat pentru siguranță)
+        if (anunt.getUser().getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Nu puteți rezerva propriul anunț");
+        }
+
+        // Verificare rezervare existentă
         boolean hasExistingReservation = disponibilitateRepo.existsByReservedById(userId);
         if (hasExistingReservation) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("Aveți deja o rezervare activă. Nu puteți face alte rezervări.");
         }
 
-        Anunt anunt = anuntRepository.findById(anuntId)
-                .orElseThrow(() -> new IllegalArgumentException("Anunț inexistent"));
-
-        // Verifică dacă userul încearcă să-și rezerve propriul anunț
-        if (anunt.getUser().getId().equals(userId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Nu puteți rezerva propriul anunț");
-        }
-
+        // Verificare interval disponibil
         AnuntDisponibilitate disp = disponibilitateRepo
                 .findByAnuntIdAndIntervalOrar(anuntId, interval)
                 .orElseThrow(() -> new IllegalArgumentException("Interval invalid"));
@@ -122,6 +125,7 @@ public class AnuntService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Utilizator invalid"));
 
+        // Efectuare rezervare
         disp.setReservedBy(user);
         disp.setDisponibil(false);
         disponibilitateRepo.save(disp);
@@ -131,27 +135,29 @@ public class AnuntService {
 
     @Transactional
     public ResponseEntity<String> anulareRezervare(Long anuntId, LocalTime interval, Long userId) {
+        // First check if the ad exists
+        if (!anuntRepository.existsById(anuntId)) {
+            return ResponseEntity.badRequest().body("Anunțul nu există");
+        }
+
         AnuntDisponibilitate disp = disponibilitateRepo
                 .findByAnuntIdAndIntervalOrar(anuntId, interval)
-                .orElseThrow(() -> new IllegalArgumentException("Interval invalid"));
-
-
+                .orElseThrow(() -> new IllegalArgumentException("Intervalul nu există pentru acest anunț"));
 
         if (disp.isDisponibil()) {
-            return ResponseEntity.badRequest().body("Intervalul nu e rezervat");
+            return ResponseEntity.badRequest().body("Intervalul nu este rezervat");
         }
 
         if (!disp.getReservedBy().getId().equals(userId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Nu puteți anula această rezervare");
+                    .body("Nu aveți permisiunea să anulați această rezervare");
         }
-        
 
         disp.setReservedBy(null);
         disp.setDisponibil(true);
         disponibilitateRepo.save(disp);
 
-        return ResponseEntity.ok("Rezervare anulată");
+        return ResponseEntity.ok("Rezervare anulată cu succes");
     }
 
     private AnuntDTO convertToDTO(Anunt anunt) {
@@ -234,5 +240,47 @@ public class AnuntService {
         return programari.stream()
                 .map(this::convertToDisponibilitateDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ResponseEntity<?> getProfilUtilizator(Long userId) {
+        // 1. Get user info
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilizator negăsit"));
+
+        // 2. Get user's published ad (modified)
+        List<Anunt> anunturiPublicate = anuntRepository.findByUserId(userId);
+        Anunt anuntPublicat = anunturiPublicate.isEmpty() ? null : anunturiPublicate.get(0);
+
+        // 3. Get user's reservations
+        List<AnuntDisponibilitate> rezervari = disponibilitateRepo.findAllByReservedById(userId);
+
+        // 4. Build response
+        Map<String, Object> response = new HashMap<>();
+
+        // User info
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        response.put("utilizator", userDTO);
+
+        // Published ad (if exists)
+        if (anuntPublicat != null) {
+            response.put("anuntPublicat", convertToDTO(anuntPublicat));
+        }
+
+        // Reserved ads (if any)
+        if (!rezervari.isEmpty()) {
+            List<AnuntRezervatDTO> anunturiRezervate = rezervari.stream()
+                    .map(rezervare -> {
+                        AnuntRezervatDTO dto = new AnuntRezervatDTO();
+                        dto.setAnunt(convertToDTO(rezervare.getAnunt()));
+                        dto.setIntervalRezervat(rezervare.getIntervalOrar().toString());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+            response.put("anunturiRezervate", anunturiRezervate);
+        }
+
+        return ResponseEntity.ok(response);
     }
 }

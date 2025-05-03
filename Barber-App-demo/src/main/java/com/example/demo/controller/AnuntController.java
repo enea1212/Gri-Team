@@ -74,13 +74,20 @@ public class AnuntController {
             @RequestParam String interval,
             Authentication auth) {
         try {
+            // Verificare autentificare
+            if (auth == null || !auth.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Trebuie să fii conectat pentru a face o rezervare");
+            }
+
             User user = getUserFromAuth(auth);
             LocalTime ora = LocalTime.parse(interval);
 
-            // Verifică dacă userul este proprietarul anunțului
+            // Verificare existență anunț
             Anunt anunt = anuntRepository.findById(anuntId)
                     .orElseThrow(() -> new IllegalArgumentException("Anunț inexistent"));
 
+            // Verificare dacă userul încearcă să-și rezerve propriul anunț
             if (anunt.getUser().getId().equals(user.getId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body("Nu puteți rezerva propriul anunț");
@@ -89,6 +96,8 @@ public class AnuntController {
             return anuntService.setProgramare(anuntId, user.getId(), ora);
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().body("Format oră invalid (HH:mm)");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -119,18 +128,35 @@ public class AnuntController {
             @RequestParam Long anuntId,
             @RequestParam @Pattern(regexp = "^\\d{2}:\\d{2}$") String interval,
             Authentication auth) {
+
         try {
             User user = getUserFromAuth(auth);
             LocalTime ora = LocalTime.parse(interval);
             return anuntService.anulareRezervare(anuntId, ora, user.getId());
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().body("Format oră invalid");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/{anuntId}/ore-disponibile")
     public ResponseEntity<?> getOreDisponibile(@PathVariable Long anuntId) {
         return anuntService.getOreDisponibile(anuntId);
+    }
+
+    @GetMapping("/profil")
+    public ResponseEntity<?> getProfilUtilizator(Authentication auth) {
+        try {
+            User user = getUserFromAuth(auth);
+            return anuntService.getProfilUtilizator(user.getId());
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Nu sunteți autentificat");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Eroare la preluarea profilului");
+        }
     }
 
     private User getUserFromAuth(Authentication auth) {
