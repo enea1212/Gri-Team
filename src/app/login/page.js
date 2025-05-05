@@ -10,59 +10,42 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = async () => {
-    // Clear any previous error message
-    setError('');
-
-    // Base64 encode the username and password for the Authorization header
-    const encodedCredentials = btoa(`${username}:${password}`);
-    
     try {
-      // Send POST request to the backend /login endpoint
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const res = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Authorization': `Basic ${encodedCredentials}`,
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
       });
 
-      if (!response.ok) {
-        // Handle unsuccessful login attempt
-        const errorMessage = await response.text();
-        setError(errorMessage || 'Failed to log in');
-        return;
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || 'Login failed');
       }
 
-      // Handle successful login
-      const data = await response.json();
-      const token = data.token;
+      const data = await res.json();
+      localStorage.setItem('token', data.token);
 
-      // Store the token (and username if needed) in local storage
-      localStorage.setItem('currentUser', username);
-      localStorage.setItem('authToken', token);
+      // Verificăm profilul userului după login
+      const profileRes = await fetch('http://localhost:8080/api/anunturi/profil', {
+        headers: { Authorization: `Bearer ${data.token}` },
+      });
 
-      // Redirect to the announcemets page
-      router.push('/announcemets');
-    } catch (error) {
-      // Handle any errors that occur during the fetch request
-      setError('An error occurred during login. Please try again.');
+      if (!profileRes.ok) throw new Error('Nu s-au putut obține datele profilului');
+
+      const userData = await profileRes.json();
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+
+      router.push('/announcements');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
-    <div className='container'>
-      <h2>LOG IN</h2>
-      <input
-        placeholder="Nume"
-        onChange={e => setUsername(e.target.value)}
-        value={username}
-      />
-      <input
-        type="password"
-        placeholder="Parolă"
-        onChange={e => setPassword(e.target.value)}
-        value={password}
-      />
+    <div className="container">
+      <h2>Autentificare</h2>
+      <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="Parolă" onChange={e => setPassword(e.target.value)} />
       <button onClick={handleLogin}>Login</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>

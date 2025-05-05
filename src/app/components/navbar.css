@@ -1,4 +1,5 @@
 .navbar {
+    position: sticky;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -33,6 +34,11 @@
     font-size: 3rem;
     cursor: pointer;
     letter-spacing: 0.5px;
+    transition: all 0.4s;
+  }
+
+  .navbar-title:hover {
+    color: #ffa358;
   }
   
   .navbar-link {
@@ -47,4 +53,5 @@
     color: #ffa358;
     transform: scale(1.5);
   }
+  
   

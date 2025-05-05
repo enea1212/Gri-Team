@@ -27,8 +27,6 @@ export default function Navbar() {
       </div>
       <div className="navbar-center">
         <Link href="/announcements" className="navbar-link">Anunțuri</Link>
-        <Link href="/packs" className="navbar-link">Pachete</Link>
-        <Link href="/messages" className="navbar-link">Mesaje</Link>
         <Link href="/about-us" className="navbar-link">Despre Noi</Link>
       </div>
       <div className="navbar-right">

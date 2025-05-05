@@ -50,10 +50,10 @@ body {
   button {
 
     margin-top: 16px;
-    width: 100%;
+    width: 75%;
     padding: 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 100px;
     background-color: #ac6d38;
     color: #fff;
     font-weight: 600;

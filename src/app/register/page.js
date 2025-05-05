@@ -8,55 +8,40 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const router = useRouter();
 
   const handleRegister = async () => {
     try {
       const response = await fetch('http://localhost:8080/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }),
       });
 
-      const data = await response.json();
-
-      if (response.status === 200) {
-        // Successfully registered, redirect to the announcements board
-        localStorage.setItem('currentUser', username);
-        router.push('/announcemets');
-      } else {
-        // Display error message from backend
-        setError(data || 'Something went wrong');
+      if (!response.ok) {
+        const errorMsg = await response.text();
+        throw new Error(errorMsg || 'Registration failed');
       }
-    } catch (error) {
-      setError('Eroare conectare la server!');
-      console.error(error);
+
+      setSuccess('Cont creat! Verifică emailul pentru activare.');
+      setError('');
+      setTimeout(() => router.push('/login'), 2000);
+    } catch (err) {
+      setError(err.message);
+      setSuccess('');
     }
   };
 
   return (
     <div className="container">
-      <h2>Sign Up</h2>
-      <input 
-        placeholder="Nume" 
-        onChange={e => setUsername(e.target.value)} 
-        value={username}
-      />
-      <input 
-        placeholder="Email" 
-        onChange={e => setEmail(e.target.value)} 
-        value={email}
-      />
-      <input 
-        type="password" 
-        placeholder="Parolă" 
-        onChange={e => setPassword(e.target.value)} 
-        value={password}
-      />
+      <h2>Înregistrare</h2>
+      <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
+      <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
+      <input type="password" placeholder="Parolă" onChange={e => setPassword(e.target.value)} />
       <button onClick={handleRegister}>Register</button>
-      {error && <p className="error">{error}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
     </div>
   );
 }
