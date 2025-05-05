@@ -182,7 +182,14 @@ public class AnuntService {
         dto.setIntervalOrar(disp.getIntervalOrar());
         dto.setDisponibil(disp.isDisponibil());
 
+        if (disp.getOwner() != null) {
+            dto.setOwnerId(disp.getOwner().getId());
+        }
+
         if (disp.getReservedBy() != null) {
+            dto.setReservedByUserId(disp.getReservedBy().getId());
+            dto.setReservedByUsername(disp.getReservedBy().getUsername());
+
             UserDTO userDTO = new UserDTO();
             userDTO.setId(disp.getReservedBy().getId());
             userDTO.setUsername(disp.getReservedBy().getUsername()); // Adaugă și username

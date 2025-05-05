@@ -30,11 +30,15 @@ public class AnuntDisponibilitateDTO {
     }
 
     public void setOwnerId(Long userId) {
-        this.ownerId = ownerId;
+        this.ownerId = userId;
     }
 
     public void setReservedByUserId(Long userId) {
-        this.reservedByUserId = reservedByUserId;
+        this.reservedByUserId = userId;
+    }
+
+    public String getReservedByUserName() {
+        return reservedByUserName;
     }
 
     public void setReservedByUsername(String reservedByUserName)
