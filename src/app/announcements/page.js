@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import NotesIcon from '@mui/icons-material/Notes';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import PersonIcon from '@mui/icons-material/Person';
 import './announcements.css';
 
 export default function AnnouncementsPage() {
@@ -109,68 +113,71 @@ export default function AnnouncementsPage() {
   
 
   return (
-    <div className="ann-container">
+    <>
+    <div className='ann-background'></div>
+      <div className="ann-container">
 
-      {status === 'unauthenticated' && (
-        <p style={{ color: 'red' }}>
-          Trebuie să ai un cont verificat pentru a posta un anunț.
-        </p>
-      )}
+        {status === 'unauthenticated' && (
+          <p style={{ color: 'red' }}>
+            Trebuie să ai un cont verificat pentru a posta un anunț.
+          </p>
+        )}
 
-      {status === 'verified' && (
-        <button className="post-ann-button" onClick={() => router.push('/create')}>
-          Postează un anunț
-        </button>
-      )}
-
-      <h1 className="ann-title">Anunțuri disponibile</h1>
-
-      {error && <p className="ann-text" style={{ color: 'red' }}>{error}</p>}
-
-      {anunturi.map(anunt => (
-        <div key={anunt.id} className="ann-infolist" style={{ borderBottom: '1px solid #ccc', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
-          {anunt.poza && (
-            <img
-              src={`http://localhost:8080/uploads/${anunt.poza}`}
-              alt="Poza frizer"
-              className="ann-img"
-            />
-          )}
-          <h3 style={{ fontWeight: 'bold', fontSize: '1.6rem'}}>
-            {anunt.titlu}
-          </h3>
-          <p><strong>Descriere:</strong> {anunt.descriere}</p>
-          <p><strong>Locație:</strong> {anunt.locatie}</p>
-          <p><strong>Preț:</strong> {anunt.pret} RON</p>
-          <p><strong>Frizer:</strong> {anunt.user.username}</p>
-
-          <button className="ann-button" onClick={() => toggleDisponibilitate(anunt.id)}>
-            {selectedId === anunt.id ? 'Ascunde Programările' : 'Programează-te'}
+        {status === 'verified' && (
+          <button className="post-ann-button" onClick={() => router.push('/create')}>
+            Postează un anunț
           </button>
+        )}
 
-          {selectedId === anunt.id && disponibilitate[anunt.id] && (
-            <ul className="ann-infolist">
-              {disponibilitate[anunt.id].length > 0 ? (
-                disponibilitate[anunt.id].map((interval, index) => (
-                  <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>{interval}</span>
-                    <button
-                      className="ann-button"
-                      style={{ fontSize: '0.75rem', padding: '0.3rem 0.7rem', marginLeft: '1rem' }}
-                      onClick={() => handleRezervare(anunt.id, interval)}
-                    >
-                      Rezervă
-                    </button>
-                  </li>
-                ))
-              ) : (
-                <li>Nu există programări disponibile.</li>
-              )}
-            </ul>
-          )}
+        <h1 className="ann-title">Anunțuri disponibile</h1>
 
-        </div>
-      ))}
-    </div>
+        {error && <p className="ann-text" style={{ color: 'red' }}>{error}</p>}
+
+        {anunturi.map(anunt => (
+          <div key={anunt.id} className="ann-infolist" style={{ borderBottom: '1px solid #ccc', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+            {anunt.poza && (
+              <img
+                src={`http://localhost:8080/uploads/${anunt.poza}`}
+                alt="Poza frizer"
+                className="ann-img"
+              />
+            )}
+            <h3 style={{ fontWeight: 'bold', fontSize: '1.6rem', color: 'white'}}>
+              {anunt.titlu}
+            </h3>
+            <p><NotesIcon style={{ fontSize: 18, marginRight: '6px' }} /><strong>Descriere:</strong> {anunt.descriere}</p>
+            <p><LocationOnIcon style={{ fontSize: 18, marginRight: '6px' }} /><strong>Locație:</strong> {anunt.locatie}</p>
+            <p><AttachMoneyIcon style={{ fontSize: 18, marginRight: '6px' }} /><strong>Preț:</strong> {anunt.pret} RON</p>
+            <p><PersonIcon style={{ fontSize: 18, marginRight: '6px' }} /><strong>Frizer:</strong> {anunt.user.username}</p>
+
+            <button className="ann-button" onClick={() => toggleDisponibilitate(anunt.id)}>
+              {selectedId === anunt.id ? 'Ascunde Programările' : 'Programează-te'}
+            </button>
+
+            {selectedId === anunt.id && disponibilitate[anunt.id] && (
+              <ul className="ann-infolist">
+                {disponibilitate[anunt.id].length > 0 ? (
+                  disponibilitate[anunt.id].map((interval, index) => (
+                    <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>{interval}</span>
+                      <button
+                        className="ann-button"
+                        style={{ fontSize: '0.75rem', padding: '0.3rem 0.7rem', marginLeft: '1rem' }}
+                        onClick={() => handleRezervare(anunt.id, interval)}
+                      >
+                        Rezervă
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <li>Nu există programări disponibile.</li>
+                )}
+              </ul>
+            )}
+
+          </div>
+        ))}
+      </div>
+    </>  
   );
 }

@@ -17,9 +17,9 @@ export default function AboutPage() {
 
   return (
     <div className="about-container">
-      <h1 className="about-title">HOLYCUT</h1>
+      <h1 className="about-title">FRESHTRIM</h1>
       <p className="about-description">
-        HOLYCUT este o platformă modernă care conectează frizerii cu clienții într-un mod simplu și eficient.<br/>
+        FRESHTRIM este o platformă modernă care conectează frizerii cu clienții într-un mod simplu și eficient.<br/>
         Frizerii își pot crea anunțuri personalizate cu servicii, prețuri și intervale disponibile.<br/>
         Utilizatorii pot naviga printre frizerii activi, își pot rezerva un interval și pot interacționa într-un mediu prietenos și organizat.<br/>
         Scopul aplicației este să ofere o experiență digitală rapidă și sigură pentru programările de zi cu zi.

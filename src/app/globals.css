@@ -1,15 +1,30 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #000000;
     color: #333;
   }
-  
+
 .landing-background {
  
   height: 100vh;
   width: 100vw;
   background-image: url('/app-background.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(2px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+
+}
+
+.reglog-background {
+ 
+  height: 100vh;
+  width: 100vw;
+  background-image: url('/reglog-background.jpg');
   background-size: cover;
   background-position: center;
   filter: blur(4px);
@@ -20,31 +35,53 @@ body {
 
 }
 
-  .container {
-    max-width: 400px;
+  .landing-container {
+    max-width: 500px;
     margin: 80px auto;
     padding: 2rem;
-    background: white;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
     border-radius: 50px;
-    border-width: 5px;
-    border-color: black;
     box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
     text-align: center;
   }
+
+  .reglog-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border-radius: 50px;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+
+  .reglog-container h2 {
+    color:white;
+  }
   
   h1, h2 {
+    color: white;
     font-size: 2rem;
     font-weight: "bold";
     margin-bottom: 1rem;
   }
   
-  input {
-    width: 100%;
+  p {
+    color: white;
+}
+
+  input, textarea {
+    width: 90%;
     padding: 12px;
     margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
+    border: 2px solid #ac6d38;
+    background-color: black;
+    color: wheat;
+    font-weight: bold;
+    border-radius: 50px;
+    font-size: 18px;
   }
   
   button {
@@ -54,7 +91,9 @@ body {
     padding: 12px;
     border: none;
     border-radius: 100px;
-    background-color: #ac6d38;
+    border-width: 20px;
+    border: 2px solid #ac6d38;
+    background-color: black;
     color: #fff;
     font-weight: 600;
     font-size: 20px;
@@ -65,6 +104,7 @@ body {
   
   button:hover {
     background-color: #333;
+    color: #ac6d38;
     transform: scale(1.2);
   }
   

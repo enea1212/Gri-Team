@@ -42,12 +42,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="container">
-      <h2>Autentificare</h2>
-      <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
-      <input type="password" placeholder="Parolă" onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+    <>
+    <div className='reglog-background'></div>
+      <div className="reglog-container">
+        <h2>Autentificare</h2>
+        <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
+        <input type="password" placeholder="Parolă" onChange={e => setPassword(e.target.value)} />
+        <button onClick={handleLogin}>Login</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+      </div>
+    </>
   );
 }

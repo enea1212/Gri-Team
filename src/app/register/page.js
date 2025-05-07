@@ -34,14 +34,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="container">
-      <h2>Înregistrare</h2>
-      <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
-      <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Parolă" onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleRegister}>Register</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-    </div>
+    <>
+    <div className='reglog-background'></div>
+      <div className="reglog-container">
+        <h2>Înregistrare</h2>
+        <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
+        <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
+        <input type="password" placeholder="Parolă" onChange={e => setPassword(e.target.value)} />
+        <button onClick={handleRegister}>Register</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {success && <p style={{ color: 'green' }}>{success}</p>}
+      </div>
+    </>  
   );
 }

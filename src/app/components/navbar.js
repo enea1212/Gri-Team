@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import PersonIcon from '@mui/icons-material/AccountCircle';
 import './navbar.css';
 
 export default function Navbar() {
@@ -23,14 +24,17 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <span onClick={goHome} className="navbar-title">HOLYCUT</span>
+        <span onClick={goHome} className="navbar-title">FRESHTRIM</span>
       </div>
       <div className="navbar-center">
-        <Link href="/announcements" className="navbar-link">Anunțuri</Link>
-        <Link href="/about-us" className="navbar-link">Despre Noi</Link>
+        <Link href="/announcements" className="navbar-link">ANUNȚURI</Link>
+        <Link href="/about-us" className="navbar-link">DESPRE</Link>
       </div>
       <div className="navbar-right">
-        <Link href="/myaccount" className="navbar-link">Cont</Link>
+        <Link href="/myaccount" className="navbar-link">
+        <PersonIcon style={{ fontSize: 24, marginRight: '6px' }} />
+        CONT
+        </Link>
       </div>
     </nav>
   );
